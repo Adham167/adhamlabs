@@ -1,0 +1,15 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props { project: CollectionEntry<'projects'>; }
+const { project } = Astro.props;
+const d = project.data;
+---
+<article class="group flex flex-col overflow-hidden rounded-lg border border-line bg-card transition-colors hover:border-accent">
+  {d.featuredImage && <img src={d.featuredImage} alt="" loading="lazy" width="800" height="450" class="aspect-video w-full border-b border-line object-cover" />}
+  <div class="flex flex-1 flex-col gap-3 p-5">
+    <p class="text-sm text-muted">{d.type === 'graduation' ? 'Graduation project' : 'App'} · {d.role}</p>
+    <h3 class="font-serif text-xl font-semibold"><a href={`/projects/${project.id}`} class="after:absolute after:inset-0 relative">{d.title}</a></h3>
+    <p class="text-sm leading-relaxed text-muted">{d.description}</p>
+    <ul class="mt-auto flex flex-wrap gap-1.5 pt-2">{d.techStack.map((t) => <li class="rounded border border-line px-2 py-0.5 text-xs text-muted">{t}</li>)}</ul>
+  </div>
+</article>

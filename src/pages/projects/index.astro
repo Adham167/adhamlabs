@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+
+const all = (await getCollection('projects', (p) => !p.data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const groups = [
+  { title: 'Graduation projects', items: all.filter((p) => p.data.type === 'graduation') },
+  { title: 'Apps', items: all.filter((p) => p.data.type === 'app') },
+].filter((g) => g.items.length);
+---
+<Base title="Projects" description="Apps and graduation projects with demos, architecture notes, and source code.">
+  <h1 class="font-serif text-4xl font-bold">Projects</h1>
+  <p class="mt-3 max-w-prose text-muted">Each project lists the stack, my role, a demo, and the source code.</p>
+  {groups.map((g) => (
+    <section class="mt-12">
+      <h2 class="font-serif text-2xl font-semibold">{g.title}</h2>
+      <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{g.items.map((p) => <div class="relative"><ProjectCard project={p} /></div>)}</div>
+    </section>
+  ))}
+</Base>

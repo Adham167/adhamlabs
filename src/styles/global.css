@@ -1,0 +1,44 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg: #f7f8fa;
+  --fg: #14181f;
+  --muted: #5b6472;
+  --card: #ffffff;
+  --line: #dde1e7;
+  --accent: #1f4fd8;
+}
+.dark {
+  --bg: #0f1318;
+  --fg: #e8ebf0;
+  --muted: #9aa4b2;
+  --card: #151a21;
+  --line: #262d37;
+  --accent: #7aa2ff;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-card: var(--card);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --font-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-sans); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+
+.prose { --tw-prose-body: var(--fg); --tw-prose-headings: var(--fg); --tw-prose-links: var(--accent);
+  --tw-prose-code: var(--fg); --tw-prose-bold: var(--fg); --tw-prose-quotes: var(--fg);
+  --tw-prose-hr: var(--line); --tw-prose-th-borders: var(--line); --tw-prose-td-borders: var(--line);
+  --tw-prose-pre-bg: #0f1318; --tw-prose-pre-code: #e8ebf0; --tw-prose-bullets: var(--muted); --tw-prose-counters: var(--muted); }
+.prose :where(h1,h2,h3) { font-family: var(--font-serif); }
+.prose :where(code):not(pre code) { background: var(--line); padding: .15rem .35rem; border-radius: .25rem; font-weight: 500; }
+.prose :where(code):not(pre code)::before, .prose :where(code):not(pre code)::after { content: none; }

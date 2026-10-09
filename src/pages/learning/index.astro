@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import NoteRow from '../../components/NoteRow.astro';
+import { categoryLabels } from '../../data/site';
+
+const notes = (await getCollection('learning', (n) => !n.data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const filters = [['all', 'All'], ...Object.entries(categoryLabels)];
+---
+<Base title="Learning archive" description="Courses, lessons, and daily tasks I have worked through.">
+  <h1 class="font-serif text-4xl font-bold">Learning archive</h1>
+  <p class="mt-3 max-w-prose text-muted">Notes from courses, lessons, and daily tasks, newest first.</p>
+  <div class="mt-8 flex flex-wrap gap-2" role="group" aria-label="Filter by category">
+    {filters.map(([key, label]) => (
+      <button type="button" data-filter={key} aria-pressed={key === 'all'} class="rounded border border-line px-3 py-1.5 text-sm text-muted hover:text-fg aria-pressed:border-accent aria-pressed:text-accent">{label}</button>
+    ))}
+  </div>
+  <ul id="list" class="mt-4 border-t border-line">{notes.map((n) => <NoteRow note={n} />)}</ul>
+  <p id="empty" hidden class="mt-6 text-muted">No entries in this category yet.</p>
+  <script>
+    const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+    const rows = document.querySelectorAll<HTMLElement>('#list > li');
+    const empty = document.getElementById('empty')!;
+    buttons.forEach((b) => b.addEventListener('click', () => {
+      const f = b.dataset.filter;
+      buttons.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      let shown = 0;
+      rows.forEach((r) => { const ok = f === 'all' || r.dataset.category === f; r.hidden = !ok; if (ok) shown++; });
+      empty.hidden = shown > 0;
+    }));
+  </script>
+</Base>

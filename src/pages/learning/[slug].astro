@@ -1,0 +1,31 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { toEmbed } from '../../lib/video';
+import { categoryLabels } from '../../data/site';
+
+export async function getStaticPaths() {
+  const items = await getCollection('learning', (n) => !n.data.draft);
+  return items.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+---
+<Base title={d.title} description={d.summary}>
+  <article class="mx-auto max-w-3xl">
+    <a href="/learning" class="text-sm text-muted hover:text-fg">Back to archive</a>
+    <h1 class="mt-4 font-serif text-4xl font-bold leading-tight">{d.title}</h1>
+    <p class="mt-3 text-sm text-muted">
+      <time datetime={d.date.toISOString()}>{d.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</time>
+      · {categoryLabels[d.category]}{d.tags.length > 0 && ` · ${d.tags.map((t) => '#' + t).join(' ')}`}
+    </p>
+    <p class="mt-6 text-lg leading-relaxed text-muted">{d.summary}</p>
+    {d.videoUrl && (
+      <div class="mt-8 aspect-video overflow-hidden rounded-lg border border-line">
+        <iframe src={toEmbed(d.videoUrl)} title={d.title} loading="lazy" class="h-full w-full" allowfullscreen></iframe>
+      </div>
+    )}
+    <div class="prose prose-neutral mt-10 max-w-none dark:prose-invert"><Content /></div>
+  </article>
+</Base>

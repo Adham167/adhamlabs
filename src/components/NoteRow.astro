@@ -1,0 +1,18 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { categoryLabels } from '../data/site';
+interface Props { note: CollectionEntry<'learning'>; }
+const { note } = Astro.props;
+const d = note.data;
+---
+<li data-category={d.category} class="grid gap-1 border-b border-line py-4 sm:grid-cols-[8rem_1fr] sm:gap-6">
+  <time datetime={d.date.toISOString()} class="text-sm text-muted tabular-nums">{d.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</time>
+  <div>
+    <a href={`/learning/${note.id}`} class="font-medium hover:text-accent hover:underline">{d.title}</a>
+    <p class="mt-1 text-sm text-muted">{d.summary}</p>
+    <p class="mt-2 flex flex-wrap gap-x-3 text-xs text-muted">
+      <span class="font-medium text-fg">{categoryLabels[d.category]}</span>
+      {d.tags.map((t) => <span>#{t}</span>)}
+    </p>
+  </div>
+</li>
